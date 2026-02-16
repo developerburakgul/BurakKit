@@ -10,24 +10,17 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "BurakKit",
-            targets: ["BurakKit"]
-        ),
-        .library(
             name: "DynamicColor",
             targets: ["DynamicColor"]
         ),
     ],
     targets: [
         .target(
-            name: "BurakKit"
-        ),
-        .target(
             name: "DynamicColor"
         ),
         .testTarget(
-            name: "BurakKitTests",
-            dependencies: ["BurakKit"]
+            name: "DynamicColorTests",
+            dependencies: ["DynamicColor"]
         ),
     ]
 )
