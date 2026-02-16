@@ -1,5 +1,3 @@
-#if canImport(UIKit) && !os(watchOS)
-
 import SwiftUI
 import UIKit
 
@@ -49,6 +47,10 @@ public struct DynamicColor: DynamicProperty {
         self.lightUI = systemColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))
         self.darkUI  = systemColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .dark))
     }
-}
 
-#endif
+    public init(systemColor: Color) {
+        let uiColor = UIColor(systemColor)
+        self.lightUI = uiColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))
+        self.darkUI  = uiColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .dark))
+    }
+}

@@ -7,8 +7,6 @@ let package = Package(
     name: "BurakKit",
     platforms: [
         .iOS(.v14),
-        .macOS(.v12),
-        .watchOS(.v6),
     ],
     products: [
         .library(
