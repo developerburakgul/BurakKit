@@ -53,4 +53,17 @@ public struct DynamicColor: DynamicProperty {
         self.lightUI = uiColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))
         self.darkUI  = uiColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .dark))
     }
+
+    /// Creates a `DynamicColor` from two 6-digit hex strings for light and dark modes.
+    public init(hexLight: String, hexDark: String) {
+        self.lightUI = UIColor(hex: hexLight)
+        self.darkUI = UIColor(hex: hexDark)
+    }
+
+    /// Creates a `DynamicColor` from a single 6-digit hex string used for both light and dark modes.
+    public init(hex: String) {
+        let color = UIColor(hex: hex)
+        self.lightUI = color
+        self.darkUI = color
+    }
 }
