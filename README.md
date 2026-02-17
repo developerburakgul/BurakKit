@@ -1,76 +1,41 @@
+<h1 align="center">BurakKit</h1>
+
 <p align="center">
-  <img src="https://img.shields.io/badge/Swift-6.2-F05138?style=for-the-badge&logo=swift&logoColor=white" />
-  <img src="https://img.shields.io/badge/iOS-14+-007AFF?style=for-the-badge&logo=apple&logoColor=white" />
-  <img src="https://img.shields.io/badge/SPM-Compatible-ED523F?style=for-the-badge&logo=swift&logoColor=white" />
-  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" />
+  <code>Swift 6.2</code> · <code>iOS 14+</code> · <code>SPM</code>
 </p>
 
-# BurakKit
+<p align="center">
+  <b>A modular Swift toolkit that speeds up iOS development.</b><br>
+  Each module is independent — add only what you need to your project.
+</p>
 
-**A modular Swift toolkit that speeds up iOS development.**
-
-Each module is independent — add only what you need to your project.
-
----
 
 ## Modules
 
-### :construction: In Progress
-- **DynamicColor** — Theme-aware color management (Light / Dark / System)
-
-### :rocket: Coming Soon
-- **DependencyContainer** — Lightweight Dependency Injection container
-- **WebService** — Networking layer
-
-### :white_check_mark: Completed
-- ~~*None yet — DynamicColor is on its way!*~~
+| Todo | In Progress | Done |
+|:-----|:------------|:-----|
+| ⬜ WebService | 🔨 DependencyContainer | ~~DynamicColor~~ ✅ |
 
 ---
 
-## Installation
 
-### Swift Package Manager
 
-Add to your `Package.swift`:
+## Module Examples
 
-```swift
-dependencies: [
-    .package(url: "https://github.com/anthropics/BurakKit.git", from: "1.0.0")
-]
-```
+<details>
+<summary>🎨 DynamicColor</summary>
 
-Then add only the modules you need to your target:
-
-```swift
-.target(
-    name: "MyApp",
-    dependencies: [
-        .product(name: "DynamicColor", package: "BurakKit"),
-    ]
-)
-```
-
-Or via **Xcode**:
-
-> `File` > `Add Package Dependencies...` > Paste the repo URL > Select the modules you need.
-
----
-
-## :art: DynamicColor
+### DynamicColor
 
 A property wrapper that makes theme-aware color management effortless. Automatically switches between **Light**, **Dark**, and **System** appearance modes.
 
-### Core Components
+#### Core Components
 
 | Component | Purpose |
 |:---|:---|
 | `@DynamicColor` | Property wrapper that provides theme-aware colors in SwiftUI views |
 | `ThemeStore` | Singleton that manages the app theme and persists it to `UserDefaults` |
 | `AppTheme` | Enum defining `.system` / `.light` / `.dark` theme options |
-
----
-
-### Usage
 
 #### 1. Basic Color Definition
 
@@ -98,15 +63,11 @@ struct ContentView: View {
 
 #### 2. Using System Colors
 
-Pass a system color and the light/dark variants are resolved automatically:
-
 ```swift
 struct ButtonView: View {
-    // UIColor.systemBlue -> light & dark variants resolved automatically
     @DynamicColor(systemColor: UIColor.systemBlue)
     var buttonColor
 
-    // Works the same way with SwiftUI Color
     @DynamicColor(systemColor: Color.red)
     var errorColor
 
@@ -139,77 +100,11 @@ struct SettingsView: View {
 }
 ```
 
-> Theme selection is automatically persisted to `UserDefaults`. The last choice is restored on app relaunch.
+> Theme selection is automatically persisted to `UserDefaults`.
 
-#### 4. Full Example: Profile Card
+#### API Reference
 
-```swift
-struct ProfileCard: View {
-    @DynamicColor(light: Color(.systemBackground), dark: Color(.secondarySystemBackground))
-    var cardBackground
-
-    @DynamicColor(light: .black, dark: .white)
-    var titleColor
-
-    @DynamicColor(systemColor: UIColor.systemGray)
-    var subtitleColor
-
-    @DynamicColor(systemColor: Color.blue)
-    var accentColor
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Circle()
-                    .fill(accentColor)
-                    .frame(width: 48, height: 48)
-
-                VStack(alignment: .leading) {
-                    Text("Burak Gul")
-                        .font(.headline)
-                        .foregroundStyle(titleColor)
-
-                    Text("iOS Developer")
-                        .font(.subheadline)
-                        .foregroundStyle(subtitleColor)
-                }
-            }
-        }
-        .padding()
-        .background(cardBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-        .shadow(radius: 4)
-    }
-}
-```
-
----
-
-### How It Works
-
-```
-ThemeStore.shared.theme = .dark
-         |
-         v
-  @Published fires
-         |
-         v
-  @DynamicColor (DynamicProperty)
-  wrappedValue is re-evaluated
-         |
-         +-- .system --> UIColor { trait in ... } --> Defers to system
-         +-- .light  --> Returns lightUI color
-         +-- .dark   --> Returns darkUI color
-         |
-         v
-   SwiftUI View updates automatically
-```
-
----
-
-### API Reference
-
-#### `@DynamicColor`
+**`@DynamicColor`**
 
 | Initializer | Description |
 |:---|:---|
@@ -217,15 +112,17 @@ ThemeStore.shared.theme = .dark
 | `init(light:dark:)` | Define with a pair of SwiftUI Colors |
 | `init(systemColor: UIColor)` | Auto-resolve light/dark from a system UIColor |
 | `init(systemColor: Color)` | Auto-resolve light/dark from a system SwiftUI Color |
+| `init(hexLight:hexDark:)` | Define with a pair of hex strings |
+| `init(hex:)` | Single hex string for both modes |
 
-#### `ThemeStore`
+**`ThemeStore`**
 
 | Member | Type | Description |
 |:---|:---|:---|
 | `.shared` | `ThemeStore` | Singleton access point |
 | `.theme` | `AppTheme` | Current theme (Published, persisted to UserDefaults) |
 
-#### `AppTheme`
+**`AppTheme`**
 
 | Case | Title | Behavior |
 |:---|:---|:---|
@@ -233,16 +130,107 @@ ThemeStore.shared.theme = .dark
 | `.light` | "Light" | Always light theme |
 | `.dark` | "Dark" | Always dark theme |
 
+</details>
+
+<details>
+<summary>📦 DependencyContainer</summary>
+
+### DependencyContainer
+
+A lightweight, protocol-based Dependency Injection container. Thread-safe with `NSLock`, type-safe with `ObjectIdentifier`.
+
+#### Core Components
+
+| Component | Purpose |
+|:---|:---|
+| `DependencyContainerProtocol` | Protocol defining `register` and `resolve` interface |
+| `DependencyContainer` | Thread-safe implementation with `NSLock` and `ObjectIdentifier` keys |
+
+#### 1. Register & Resolve
+
+```swift
+import DependencyContainer
+
+let container = DependencyContainer()
+
+// Register with instance
+container.register(AuthServiceProtocol.self, service: AuthService())
+
+// Register with factory
+container.register(NetworkServiceProtocol.self, factory: {
+    NetworkService(baseURL: "https://api.example.com")
+})
+
+// Resolve
+let authService = container.resolve(AuthServiceProtocol.self)
+```
+
+#### 2. Using with Protocol Abstraction
+
+```swift
+protocol AnalyticsServiceProtocol {
+    func track(event: String)
+}
+
+struct FirebaseAnalytics: AnalyticsServiceProtocol {
+    func track(event: String) { /* Firebase impl */ }
+}
+
+struct MockAnalytics: AnalyticsServiceProtocol {
+    func track(event: String) { /* Mock impl */ }
+}
+
+// Production
+container.register(AnalyticsServiceProtocol.self, service: FirebaseAnalytics())
+
+// Testing
+container.register(AnalyticsServiceProtocol.self, service: MockAnalytics())
+```
+
+#### API Reference
+
+**`DependencyContainerProtocol`**
+
+| Method | Description |
+|:---|:---|
+| `register(_:service:)` | Register an instance for a type (`@MainActor`) |
+| `register(_:factory:)` | Register via factory closure (`@MainActor`) |
+| `resolve(_:) -> T?` | Resolve a registered type (any thread) |
+
+</details>
+
 ---
 
-## Roadmap
+<details>
+<summary><b>Installation</b></summary>
 
-- [ ] **DynamicColor** — Theme-aware color management *(in progress)*
-- [ ] **DependencyContainer** — Dependency Injection container
-- [ ] **WebService** — Networking layer
+### Swift Package Manager
+
+Add to your `Package.swift`:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/developerburakgul/BurakKit.git", from: "0.1.0")
+]
+```
+
+Then add only the modules you need to your target:
+
+```swift
+.target(
+    name: "MyApp",
+    dependencies: [
+        .product(name: "DynamicColor", package: "BurakKit"),
+        .product(name: "DependencyContainer", package: "BurakKit"),
+    ]
+)
+```
+
+Or via **Xcode**:
+
+> `File` > `Add Package Dependencies...` > Paste the repo URL > Select the modules you need.
+
+</details>
 
 ---
 
-## License
-
-MIT License. See [LICENSE](LICENSE) for details.
