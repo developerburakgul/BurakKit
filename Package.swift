@@ -13,10 +13,21 @@ let package = Package(
             name: "DynamicColor",
             targets: ["DynamicColor"]
         ),
+        .library(
+            name: "DependencyContainer",
+            targets: ["DependencyContainer"]
+        ),
     ],
     targets: [
         .target(
             name: "DynamicColor"
+        ),
+        .target(
+            name: "DependencyContainer"
+        ),
+        .testTarget(
+            name: "DependencyContainerTests",
+            dependencies: ["DependencyContainer"]
         ),
         .testTarget(
             name: "DynamicColorTests",
