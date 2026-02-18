@@ -12,9 +12,10 @@
 
 ## Modules
 
-| Todo | In Progress | Done |
-|:-----|:------------|:-----|
-| ⬜ WebService | 🔨 DependencyContainer | ~~DynamicColor~~ ✅ |
+| Todo | Done |
+|:-----|:-----|
+| ⬜ WebService | ~~DynamicColor~~ ✅ |
+| | ~~DependencyContainer~~ ✅ |
 
 ---
 
