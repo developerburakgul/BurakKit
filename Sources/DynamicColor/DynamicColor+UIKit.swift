@@ -4,31 +4,19 @@ import UIKit
 @MainActor
 @propertyWrapper
 public struct DynamicColor: DynamicProperty {
-    @ObservedObject private var themeStore = ThemeStore.shared
-
     private let lightUI: UIColor
     private let darkUI: UIColor
 
     public var wrappedValue: Color {
-        #if DEBUG
-        print("🟠 DynamicColor evaluated. theme=\(themeStore.theme)")
-        #endif
-
-        switch themeStore.theme {
-        case .system:
-            let dynamic = UIColor { trait in
-                #if DEBUG
-                print("🧪 provider style:", trait.userInterfaceStyle.rawValue) // 0 unspecified, 1 light, 2 dark
-                #endif
-                return trait.userInterfaceStyle == .dark ? self.darkUI : self.lightUI
-            }
-            return Color(dynamic)
-        case .light:
-            return Color(lightUI)
-
-        case .dark:
-            return Color(darkUI)
+        let light = self.lightUI
+        let dark = self.darkUI
+        let dynamic = UIColor { trait in
+            #if DEBUG
+            print("[DynamicColor] resolving – style: \(trait.userInterfaceStyle.rawValue)")
+            #endif
+            return trait.userInterfaceStyle == .dark ? dark : light
         }
+        return Color(dynamic)
     }
 
     // MARK: - Initializers

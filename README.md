@@ -30,12 +30,14 @@
 
 A property wrapper that makes theme-aware color management effortless. Automatically switches between **Light**, **Dark**, and **System** appearance modes.
 
+Theme changes are applied globally via UIKit's `overrideUserInterfaceStyle`, so **every screen updates instantly** — including colors defined as `static var`.
+
 #### Core Components
 
 | Component | Purpose |
 |:---|:---|
-| `@DynamicColor` | Property wrapper that provides theme-aware colors in SwiftUI views |
-| `ThemeStore` | Singleton that manages the app theme and persists it to `UserDefaults` |
+| `@DynamicColor` | Property wrapper that provides theme-aware colors (works as both instance and `static` property) |
+| `ThemeStore` | Singleton that manages the app theme, persists it to `UserDefaults`, and applies `overrideUserInterfaceStyle` to all windows |
 | `AppTheme` | Enum defining `.system` / `.light` / `.dark` theme options |
 
 #### 1. Basic Color Definition
@@ -62,7 +64,27 @@ struct ContentView: View {
 }
 ```
 
-#### 2. Using System Colors
+#### 2. Centralized Color Definitions (static usage)
+
+```swift
+enum AppColors {
+    @DynamicColor(uiColorLight: .white, uiColorDark: .black)
+    static var background
+
+    @DynamicColor(hexLight: "#007AFF", hexDark: "#0A84FF")
+    static var accent
+}
+
+struct ProfileView: View {
+    var body: some View {
+        Text("Profile")
+            .foregroundStyle(AppColors.accent)
+            .background(AppColors.background)
+    }
+}
+```
+
+#### 3. Using System Colors
 
 ```swift
 struct ButtonView: View {
@@ -82,7 +104,7 @@ struct ButtonView: View {
 }
 ```
 
-#### 3. Switching Themes
+#### 4. Switching Themes
 
 ```swift
 struct SettingsView: View {
@@ -101,7 +123,7 @@ struct SettingsView: View {
 }
 ```
 
-> Theme selection is automatically persisted to `UserDefaults`.
+> Theme selection is automatically persisted to `UserDefaults`. Changing the theme updates `overrideUserInterfaceStyle` on all connected windows, so every screen reflects the new theme immediately.
 
 #### API Reference
 

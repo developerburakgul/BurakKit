@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import Combine
 
 public enum AppTheme: String, CaseIterable, Identifiable, Hashable, Sendable {
@@ -27,6 +28,10 @@ public final class ThemeStore: ObservableObject, Sendable {
     public var theme: AppTheme {
         didSet {
             defaults.set(theme.rawValue, forKey: key)
+            applyInterfaceStyle()
+            #if DEBUG
+            print("[ThemeStore] theme changed to \(theme.rawValue)")
+            #endif
         }
     }
 
@@ -34,5 +39,23 @@ public final class ThemeStore: ObservableObject, Sendable {
         self.defaults = defaults
         let raw = defaults.string(forKey: key)
         self.theme = AppTheme(rawValue: raw ?? "") ?? .system
+        applyInterfaceStyle()
+    }
+
+    private func applyInterfaceStyle() {
+        let style: UIUserInterfaceStyle = switch theme {
+        case .system: .unspecified
+        case .light:  .light
+        case .dark:   .dark
+        }
+        for scene in UIApplication.shared.connectedScenes {
+            guard let windowScene = scene as? UIWindowScene else { continue }
+            for window in windowScene.windows {
+                window.overrideUserInterfaceStyle = style
+            }
+        }
+        #if DEBUG
+        print("[ThemeStore] applyInterfaceStyle – style: \(style.rawValue)")
+        #endif
     }
 }

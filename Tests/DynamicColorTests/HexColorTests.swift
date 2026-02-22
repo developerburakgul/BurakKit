@@ -102,29 +102,21 @@ struct HexColorTests {
 
     @Test
     func dynamicColorHexResolvesCorrectlyForLightTheme() {
-        let previousTheme = ThemeStore.shared.theme
-        ThemeStore.shared.theme = .light
-
         let sut = DynamicColor(hexLight: "#FFFFFF", hexDark: "#000000")
-        let result = sut.wrappedValue
-        let expected = Color(UIColor(hex: "#FFFFFF"))
+        let dynamicUIColor = UIColor(sut.wrappedValue)
+        let resolved = dynamicUIColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))
+        let expected = UIColor(hex: "#FFFFFF").resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))
 
-        #expect(result == expected)
-
-        ThemeStore.shared.theme = previousTheme
+        #expect(resolved == expected)
     }
 
     @Test
     func dynamicColorHexResolvesCorrectlyForDarkTheme() {
-        let previousTheme = ThemeStore.shared.theme
-        ThemeStore.shared.theme = .dark
-
         let sut = DynamicColor(hexLight: "#FFFFFF", hexDark: "#000000")
-        let result = sut.wrappedValue
-        let expected = Color(UIColor(hex: "#000000"))
+        let dynamicUIColor = UIColor(sut.wrappedValue)
+        let resolved = dynamicUIColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .dark))
+        let expected = UIColor(hex: "#000000").resolvedColor(with: UITraitCollection(userInterfaceStyle: .dark))
 
-        #expect(result == expected)
-
-        ThemeStore.shared.theme = previousTheme
+        #expect(resolved == expected)
     }
 }

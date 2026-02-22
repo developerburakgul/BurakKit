@@ -6,13 +6,6 @@ import UIKit
 @MainActor
 struct DynamicColorTests {
 
-    private func makeDefaults() -> UserDefaults {
-        let suiteName = "DynamicColorTests.\(UUID().uuidString)"
-        let defaults = UserDefaults(suiteName: suiteName)!
-        defaults.removePersistentDomain(forName: suiteName)
-        return defaults
-    }
-
     // MARK: - init(uiColorLight:uiColorDark:)
 
     @Test
@@ -48,73 +41,42 @@ struct DynamicColorTests {
     // MARK: - Theme-based color resolution
 
     @Test
-    func lightThemeReturnsLightColor() {
-        let defaults = makeDefaults()
-        let store = ThemeStore(defaults: defaults)
-        store.theme = .light
-
-        // Resolve the light UIColor to a Color for comparison
+    func lightTraitResolvesToLightColor() {
         let lightUIColor = UIColor.white
-        let expectedColor = Color(lightUIColor)
-
         let sut = DynamicColor(uiColorLight: lightUIColor, uiColorDark: .black)
-        // DynamicColor uses ThemeStore.shared, so we set shared to light
-        let previousTheme = ThemeStore.shared.theme
-        ThemeStore.shared.theme = .light
 
-        let result = sut.wrappedValue
-        #expect(result == expectedColor)
+        let dynamicUIColor = UIColor(sut.wrappedValue)
+        let resolved = dynamicUIColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))
 
-        ThemeStore.shared.theme = previousTheme
+        let expected = lightUIColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))
+        #expect(resolved == expected)
     }
 
     @Test
-    func darkThemeReturnsDarkColor() {
+    func darkTraitResolvesToDarkColor() {
         let darkUIColor = UIColor.black
-        let expectedColor = Color(darkUIColor)
-
         let sut = DynamicColor(uiColorLight: .white, uiColorDark: darkUIColor)
-        let previousTheme = ThemeStore.shared.theme
-        ThemeStore.shared.theme = .dark
 
-        let result = sut.wrappedValue
-        #expect(result == expectedColor)
+        let dynamicUIColor = UIColor(sut.wrappedValue)
+        let resolved = dynamicUIColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .dark))
 
-        ThemeStore.shared.theme = previousTheme
+        let expected = darkUIColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .dark))
+        #expect(resolved == expected)
     }
 
     @Test
-    func systemThemeReturnsDynamicColor() {
-        let sut = DynamicColor(uiColorLight: .white, uiColorDark: .black)
-        let previousTheme = ThemeStore.shared.theme
-        ThemeStore.shared.theme = .system
-
-        // System theme should produce a valid Color (dynamic UIColor-backed)
-        let _ = sut.wrappedValue
-
-        ThemeStore.shared.theme = previousTheme
-    }
-
-    // MARK: - Theme switching
-
-    @Test
-    func wrappedValueChangesWhenThemeSwitches() {
+    func dynamicColorResolvesToDifferentColorsPerTrait() {
         let lightUIColor = UIColor.white
         let darkUIColor = UIColor.black
         let sut = DynamicColor(uiColorLight: lightUIColor, uiColorDark: darkUIColor)
 
-        let previousTheme = ThemeStore.shared.theme
+        let dynamicUIColor = UIColor(sut.wrappedValue)
 
-        ThemeStore.shared.theme = .light
-        let lightResult = sut.wrappedValue
+        let lightResolved = dynamicUIColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))
+        let darkResolved = dynamicUIColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .dark))
 
-        ThemeStore.shared.theme = .dark
-        let darkResult = sut.wrappedValue
-
-        #expect(lightResult == Color(lightUIColor))
-        #expect(darkResult == Color(darkUIColor))
-        #expect(lightResult != darkResult)
-
-        ThemeStore.shared.theme = previousTheme
+        #expect(lightResolved == lightUIColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light)))
+        #expect(darkResolved == darkUIColor.resolvedColor(with: UITraitCollection(userInterfaceStyle: .dark)))
+        #expect(lightResolved != darkResolved)
     }
 }
