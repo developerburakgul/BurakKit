@@ -42,7 +42,7 @@ public final class ThemeStore: ObservableObject, Sendable {
         applyInterfaceStyle()
     }
 
-    private func applyInterfaceStyle() {
+    public func applyInterfaceStyle() {
         let style: UIUserInterfaceStyle = switch theme {
         case .system: .unspecified
         case .light:  .light
