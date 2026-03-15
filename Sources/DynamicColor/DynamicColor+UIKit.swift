@@ -12,11 +12,17 @@ public struct DynamicColor: DynamicProperty {
 
     // MARK: - Private
 
-    private init(light: UIColor, dark: UIColor) {
-        let dynamic = UIColor { trait in
+    /// Creates the dynamic UIColor in a nonisolated context so the provider
+    /// closure does NOT inherit @MainActor isolation and can be safely
+    /// called from any thread (e.g. SwiftUI's AsyncRenderer on iOS 26+).
+    nonisolated private static func makeColor(light: UIColor, dark: UIColor) -> Color {
+        Color(UIColor { trait in
             trait.userInterfaceStyle == .dark ? dark : light
-        }
-        self.resolvedColor = Color(dynamic)
+        })
+    }
+
+    private init(light: UIColor, dark: UIColor) {
+        self.resolvedColor = Self.makeColor(light: light, dark: dark)
     }
 
     // MARK: - Initializers
