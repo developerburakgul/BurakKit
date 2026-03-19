@@ -17,6 +17,10 @@ let package = Package(
             name: "DependencyContainer",
             targets: ["DependencyContainer"]
         ),
+        .library(
+            name: "UIComponents",
+            targets: ["UIComponents"]
+        ),
     ],
     targets: [
         .target(
@@ -24,6 +28,9 @@ let package = Package(
         ),
         .target(
             name: "DependencyContainer"
+        ),
+        .target(
+            name: "UIComponents"
         ),
         .testTarget(
             name: "DependencyContainerTests",
