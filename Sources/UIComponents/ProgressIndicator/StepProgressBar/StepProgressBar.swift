@@ -147,7 +147,7 @@ public struct StepProgressBar: View, @MainActor Equatable {
     }
 
     private var isBackVisible: Bool {
-        binding.currentStep > 0
+        binding.currentStep > 1
     }
 
     private var isSkipVisible: Bool {
@@ -188,7 +188,7 @@ private struct PreviewPage<Content: View>: View {
                 onAction: { action in
                     switch action {
                     case .didTapBack:
-                        if entity.binding.currentStep > 0 {
+                        if entity.binding.currentStep > 1 {
                             entity.binding.currentStep -= 1
                         }
                     case .didTapSkip:
@@ -218,7 +218,7 @@ private struct PreviewPage<Content: View>: View {
 
             HStack(spacing: 12) {
                 Button {
-                    if entity.binding.currentStep > 0 {
+                    if entity.binding.currentStep > 1 {
                         entity.binding.currentStep -= 1
                     }
                 } label: {
@@ -264,10 +264,10 @@ private struct PreviewPage<Content: View>: View {
 
 private struct OnboardingPreview: View {
     @State var entity = StepProgressBarEntity(
-        binding: .init(currentStep: 0),
+        binding: .init(currentStep: 1),
         config: .init(
             totalSteps: 10,
-            skippableSteps: [0, 1, 2, 3, 4]
+            skippableSteps: [1, 2, 3, 4]
         )
     )
 
@@ -310,7 +310,7 @@ private struct CirclePreview: View {
         binding: .init(currentStep: 2),
         config: .init(
             totalSteps: 6,
-            skippableSteps: [0, 1],
+            skippableSteps: [1, 2],
             segmentHeight: 8,
             segmentSpacing: 8,
             segmentShape: .circle,
